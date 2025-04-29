@@ -22,6 +22,8 @@ ChangeLog
 RELEASENOTES.rst
 doc/build
 doc/source/_static
+bun.lockb
+.cache-loader
 
 # config
 test/e2e/config/local_config.yaml

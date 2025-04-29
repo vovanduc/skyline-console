@@ -15,12 +15,12 @@
 import React from 'react';
 import IntlMessageFormat from 'intl-messageformat';
 import escapeHtml from 'escape-html';
-import cookie from 'cookie';
 import queryParser from 'querystring';
 import invariant from 'invariant';
 import { getLocalStorageItem } from 'utils/local-storage';
 // import * as constants from './constants';
 import { merge } from 'lodash';
+import cookie from './cookie'; // Changed from 'cookie' to './cookie'
 
 // eslint-disable-next-line no-extend-native
 String.prototype.defaultMessage = function (msg) {
@@ -217,8 +217,9 @@ class SLI18n {
   getLocaleFromCookie(options) {
     const { cookieLocaleKey } = options;
     if (cookieLocaleKey) {
-      const params = cookie.parse(document.cookie);
-      return params && params[cookieLocaleKey];
+      // Use the custom cookie utility function directly
+      const cookieValue = cookie(cookieLocaleKey);
+      return cookieValue;
     }
   }
 

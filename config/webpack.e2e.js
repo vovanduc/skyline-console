@@ -73,7 +73,15 @@ module.exports = (env) => {
               loader: 'style-loader',
             },
             {
-              loader: 'css-loader',
+              loader: 'css-loader', // translates CSS into CommonJS
+              options: {
+                modules: {
+                  mode: 'global',
+                  localIdentName: '[name]__[local]--[hash:base64:5]',
+                },
+                sourceMap: false,
+                importLoaders: 1,
+              },
             },
           ],
         },
@@ -89,14 +97,18 @@ module.exports = (env) => {
               options: {
                 modules: {
                   mode: 'global',
+                  localIdentName: '[name]__[local]--[hash:base64:5]',
                 },
-                localIdentName: '[name]__[local]--[hash:base64:5]',
+                sourceMap: false,
+                importLoaders: 1,
               },
             },
             {
               loader: 'postcss-loader',
               options: {
-                plugins: [autoprefixer('last 2 version')],
+                postcssOptions: {
+                  plugins: [autoprefixer('last 2 version')],
+                },
                 sourceMap: false,
               },
             },

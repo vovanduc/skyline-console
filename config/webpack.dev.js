@@ -42,26 +42,41 @@ module.exports = (env) => {
   const devServer = {
     host,
     port,
-    contentBase: root('dist'),
+    static: {
+      directory: root('dist'),
+    },
     historyApiFallback: true,
     compress: true,
     hot: true,
-    inline: true,
-    disableHostCheck: true,
-    progress: true,
-    // WARNING: disable the following attribute when debug webpack.
-    stats: {
-      children: false,
-      chunks: false,
-      chunkModules: false,
-      modules: false,
-      reasons: false,
-      useExports: false,
+    client: {
+      overlay: true,
+    },
+    // Automatically find an available port if the specified one is in use
+    allowedHosts: 'all',
+    devMiddleware: {
+      stats: {
+        children: false,
+        chunks: false,
+        chunkModules: false,
+        modules: false,
+        reasons: false,
+        useExports: false,
+      },
     },
   };
 
   if (API === 'mock' || API === 'dev') {
-    devServer.proxy = proxy;
+    // Update proxy format for new webpack-dev-server
+    if (typeof proxy === 'object' && !Array.isArray(proxy)) {
+      devServer.proxy = Object.entries(proxy).map(([context, target]) => ({
+        context: [context],
+        target,
+        secure: false,
+        changeOrigin: true,
+      }));
+    } else {
+      devServer.proxy = proxy;
+    }
   }
 
   const { version, ...restConfig } = common;
@@ -76,7 +91,7 @@ module.exports = (env) => {
       publicPath: '/',
     },
     mode: 'development',
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'eval-cheap-module-source-map',
     devServer,
     module: {
       rules: [
@@ -100,7 +115,6 @@ module.exports = (env) => {
             {
               loader: 'style-loader',
             },
-            'thread-loader',
             {
               loader: 'css-loader',
             },
@@ -118,14 +132,18 @@ module.exports = (env) => {
               options: {
                 modules: {
                   mode: 'global',
+                  localIdentName: '[name]__[local]--[hash:base64:5]',
                 },
-                localIdentName: '[name]__[local]--[hash:base64:5]',
+                sourceMap: true,
+                importLoaders: 1,
               },
             },
             {
               loader: 'postcss-loader',
               options: {
-                plugins: [autoprefixer('last 2 version')],
+                postcssOptions: {
+                  plugins: [autoprefixer('last 2 version')],
+                },
                 sourceMap: true,
               },
             },
@@ -151,7 +169,6 @@ module.exports = (env) => {
             {
               loader: 'style-loader', // creates style nodes from JS strings
             },
-            'thread-loader',
             {
               loader: 'css-loader', // translates CSS into CommonJS
             },
