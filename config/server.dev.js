@@ -65,14 +65,40 @@ const apiMap = {
 
   // Neutron (Network)
   '/api/openstack/regionone/neutron/': {
-    target: 'http://openstack.local/network/',
-    pathRewrite: { '^/api/openstack/regionone/neutron/': '/' },
+    target: 'http://openstack.local:9696/',
+    pathRewrite: { '^/api/openstack/regionone/neutron': '/networking' },
+    onProxyRes: (proxyRes) => {
+      const { location } = proxyRes.headers;
+      if (
+        location &&
+        location.startsWith('http://openstack.local:9696/networking/')
+      ) {
+        proxyRes.headers.location = location.replace(
+          'http://openstack.local:9696/networking/',
+          '/api/openstack/regionone/neutron/'
+        );
+      }
+    },
+    headers: {
+      Host: 'openstack.local:9696',
+    },
+    onProxyReq: (proxyReq, req) => {
+      console.log(
+        `Neutron Proxy: ${req.method} ${req.url} -> ${proxyReq.path}`
+      );
+    },
   },
 
   // Cinder (Block Storage)
   '/api/openstack/regionone/cinder/': {
     target: 'http://openstack.local/volume/',
     pathRewrite: { '^/api/openstack/regionone/cinder/': '/' },
+  },
+
+  // Placement
+  '/api/openstack/regionone/placement/': {
+    target: 'http://openstack.local/placement/',
+    pathRewrite: { '^/api/openstack/regionone/placement/': '/' },
   },
 
   // Route mặc định cho tất cả API khác
