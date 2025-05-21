@@ -5,7 +5,7 @@ yarn-error.log
 package-lock.json
 .vscode
 .idea
-config/local_config.yaml
+# config/local_config.yaml
 test/e2e/videos
 test/e2e/screenshots
 test/e2e/downloads
@@ -24,6 +24,8 @@ doc/build
 doc/source/_static
 .cache-loader
 bun.lockb
+skyline_console/static/
+
 
 # config
 test/e2e/config/local_config.yaml
