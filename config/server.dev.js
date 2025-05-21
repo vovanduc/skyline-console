@@ -61,31 +61,15 @@ const apiMap = {
 
   // ############ Nova (Compute) ############
   '/api/openstack/hochiminh/nova/': {
-    target: 'http://control.cercatrova.uk:8774/v2.1/',
+    target: 'http://control.cercatrova.uk:8774/',
     pathRewrite: { '^/api/openstack/hochiminh/nova/': '/' },
-    onProxyRes: (proxyRes) => {
-      // Fix lỗi Location header nếu có chuyển hướng
-      const { location } = proxyRes.headers;
-      if (
-        location &&
-        location.startsWith('http://control.cercatrova.uk:8774/v2.1/')
-      ) {
-        proxyRes.headers.location = location.replace(
-          'http://control.cercatrova.uk:8774/v2.1/',
-          '/api/openstack/hochiminh/nova/'
-        );
-      }
-    },
-    onProxyReq: (proxyReq, req) => {
-      console.log(`Nova Proxy: ${req.method} ${req.url} -> ${proxyReq.path}`);
-    },
   },
   // ############ end Nova (Compute) ############
 
   // ############ Glance (Image) ############
   '/api/openstack/hochiminh/glance/': {
-    target: 'http://control.cercatrova.uk/image/',
-    pathRewrite: { '^/api/openstack/HoChiMinh/glance/': '/' },
+    target: 'http://control.cercatrova.uk:9292/',
+    pathRewrite: { '^/api/openstack/hochiminh/glance/': '/' },
   },
   // ############ end Glance (Image) ############
 
@@ -118,15 +102,15 @@ const apiMap = {
 
   // ############ Cinder (Block Storage) ############
   '/api/openstack/hochiminh/cinder/': {
-    target: 'http://control.cercatrova.uk/volume/',
-    pathRewrite: { '^/api/openstack/HoChiMinh/cinder/': '/' },
+    target: 'http://control.cercatrova.uk:8776/',
+    pathRewrite: { '^/api/openstack/hochiminh/cinder/': '/' },
   },
   // ############ end Cinder (Block Storage) ############
 
   // ############ Placement ############
   '/api/openstack/hochiminh/placement/': {
-    target: 'http://control.cercatrova.uk/placement/',
-    pathRewrite: { '^/api/openstack/HoChiMinh/placement/': '/' },
+    target: 'http://control.cercatrova.uk:8780/',
+    pathRewrite: { '^/api/openstack/hochiminh/placement/': '/' },
   },
   // ############ end Placement ############
 
